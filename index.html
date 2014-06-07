@@ -10,6 +10,7 @@
    <link rel="stylesheet" href="deck.js/extensions/menu/deck.menu.css">
    <link rel="stylesheet" href="deck.js/extensions/navigation/deck.navigation.css">
    <link rel="stylesheet" href="deck.js/extensions/status/deck.status.css">
+   <link rel="stylesheet" href="/style.css">
 
    <!-- Theme CSS files (menu swaps these out) -->
    <link rel="stylesheet" id="style-theme-link"
@@ -20,17 +21,35 @@
 <body class="deck-container">
 
    <div class="slide">
-      <h1>DBIx::Class</h1>
+      <h1>DBIx::Class Foundations</h1>
+   </div>
+
+   <div class="slide">
+      <h2>DBIx::Class Foundations</h2>
+      <p>Arthur Axel fREW Schmidt</p>
+      <p>YAPC::NA</p>
+      <p>Orlando, Florida</p>
+      <p>2014 June 24, 10:00</p>
    </div>
 
    <div class="slide">
       <h2>Who Am I?</h2>
-      <h4>Arthur Axel "fREW" Schmidt</h4>
+      <p>Arthur Axel fREW Schmidt</p>
+      <p>MTSI</p>
+      <p>Lynx</p>
    </div>
 
    <div class="slide">
       <h2>Outline</h2>
-      <ol>
+      <div class="r img">
+         <img src="/img/lines.jpg" />
+         <p><a
+            href="https://secure.flickr.com/photos/flyingturtle/837938254/in/photostream/">"yellow
+            lines" by steve loya</a></p>
+         <p><a href="https://creativecommons.org/licenses/by-nc-nd/2.0/"> Some
+            rights reserved</a></p>
+      </div>
+      <ol class=l>
          <li class="slide">DBIx::Class?</li>
          <li class="slide">DBIC at "Compile" Time</li>
          <li class="slide">DBIC at "Run" Time</li>
@@ -42,15 +61,284 @@
 
    <div class="slide">
       <h2>DBIx::Class?</h2>
+      <img src="/img/ubik.jpg" class=r />
+      <ul class=l>
+         <li class="slide">SQL Generation</li>
+         <li class="slide">Object Defintion and Instantiation</li>
+      </ul>
    </div>
 
    <div class="slide">
       <h2>DBIC at "Compile" Time</h2>
       <ol>
+         <li class="slide">
+            Definition Options<ul>
+               <li>Perl (vanilla DBIC)</li>
+               <li>SQL (::Schema::Loader</li>
+            </ul>
+         </li>
+         <li class="slide">Schema</li>
          <li class="slide">Result</li>
          <li class="slide">ResultSource</li>
          <li class="slide">ResultSet</li>
-         <li class="slide">Schema</li>
+      </ol>
+   </div>
+
+   <div class="slide">
+      <h2>Definition via ::Schema::Loader</h2>
+
+      <ol>
+         <li class="slide">Create DB with DDL or tool</li>
+         <li class="slide">Generate DBIC Schema with ::Schema::Loader</li>
+      </ol>
+      <div class="slide">
+         <pre>
+use DBIx::Class::Schema::Loader 'make_schema_at';
+make_schema_at( 'My::Schema',
+    { debug => 1, dump_directory => './lib' },
+    [ 'dbi:Pg:dbname="foo"', 'myuser', 'mypassword' ],
+)
+         </pre>
+      </div>
+   </div>
+
+   <div class="slide">
+      <h2>Definition via ::SL - hints</h2>
+
+      <ol>
+         <li class="slide">Name tables and columns consistently</li>
+         <li class="slide">Create FK's</li>
+         <li class="slide"><a
+            href="https://github.com/frioux/dotfiles/blob/1b82b219b2117a438745007b8ce82bb0ec206682/zsh/envrc/S50_functions#L17,L19">sl_table_moniker</a></li>
+         <li class="slide">(No more ::SL, I don't use it much)</li>
+      </ol>
+   </div>
+
+   <div class="slide">
+      <h2>Definition via Perl - Schema</h2>
+
+      <ul>
+         <li class=slide>Represents DB</li>
+         <li class=slide>Good for high level methods</li>
+         <li class=slide>Almost no boilerplate</li>
+      </ul>
+   </div>
+
+   <div class="slide">
+      <h2>Definition via Perl - Schema</h2>
+
+      <pre>
+package My::Schema; use 5.20.0; use warnings;
+
+our $VERSION = 1;
+use base 'DBIx::Class::Schema';
+
+__PACKAGE__->load_namespaces(
+   default_resultset_class => 'ResultSet',
+);
+
+1;
+      </pre>
+   </div>
+
+   <div class="slide">
+      <h2>Definition via Perl - Result</h2>
+
+      <ul>
+         <li class=slide>Represents Row</li>
+         <li class=slide>Normally Bulk of Configuration</li>
+         <li class=slide>Definition Conflates with ResultSource</li>
+         <li class=slide>(candy)</li>
+      </ul>
+   </div>
+
+   <div class="slide">
+      <h2>Definition via Perl - Result Base Class</h2>
+
+      <p class="slide">Optional, but a good idea</p>
+
+      <div class="slide">
+         <pre>
+package My::Schema::Result;
+
+use parent 'DBIx::Class::Core';
+
+__PACKAGE__->load_components(
+   'Helper::Row::RelationshipDWIM', # shorter slides
+);
+
+1;
+         </pre>
+      </div>
+   </div>
+
+   <div class="slide">
+      <h2>Definition via Perl - Candy Base Class</h2>
+
+      <p class="slide">Super Optional, but good for slides</p>
+
+      <div class="slide">
+         <pre>
+package My::Schema::Candy;
+
+use 5.20.0;
+use warnings;
+
+use parent 'DBIx::Class::Candy';
+
+sub base { 'My::Schema::Result' }
+sub perl_version { 20 }
+sub autotable { 1 }
+
+1;
+         </pre>
+      </div>
+   </div>
+
+   <div class="slide">
+      <h2>Definition via Perl - Result Class</h2>
+
+      <div class="slide">
+         <pre>
+package My::Schema::Result::Device;
+
+use My::Schema::Candy;
+
+primary_column id => {
+   data_type => 'int',
+   is_auto_increment => 1,
+};
+
+column type_id => { data_type => 'int' };
+
+column name => {
+   data_type => 'varchar',
+   size      => 128,
+};
+
+column last_checkin => {
+   data_type   => 'datetime',
+   is_nullable => 1,
+};
+
+column is_enabled => { data_type => 'bit' };
+
+has_many computer_device_links => '::Computer_Device', 'device_id';
+belongs_to type => '::DeviceType', 'type_id';
+
+unique_constraint name_and_type => [qw(name type_id)];
+
+1;
+         </pre>
+      </div>
+   </div>
+
+   <div class="slide">
+      <h2>Definition via Perl - Result Class</h2>
+
+      <ol>
+         <li class=slide> <pre> use My::Schema::Candy; </pre></li>
+         <li class=slide><pre>
+primary_column id => {
+   data_type => 'int',
+   is_auto_increment => 1,
+};
+         </pre></li>
+      </ol>
+   </div>
+
+   <div class="slide">
+      <h2>Definition via Perl - Result Class</h2>
+
+      <pre>
+column type_id => { data_type => 'int' };
+
+column name => {
+   data_type => 'varchar',
+   size      => 128,
+};
+
+column last_checkin => {
+   data_type   => 'datetime',
+   is_nullable => 1,
+};
+
+column is_enabled => { data_type => 'bit' };
+         </pre>
+   </div>
+
+   <div class=slide>
+      <h2>Definition via Perl - Result Class</h2>
+
+      <ol>
+         <li class=slide><pre>
+has_many computer_device_links => '::Computer_Device', 'device_id';
+         </pre></li>
+         <li class=slide><pre>
+belongs_to type => '::DeviceType', 'type_id';
+         </pre></li>
+         <li class=slide><pre>
+unique_constraint name_and_type => [qw(name type_id)];
+         </pre></li>
+      </ol>
+   </div>
+
+   <div class="slide">
+      <h2>Definition via Perl - Result Class</h2>
+
+      <div class="slide">
+         <pre>
+package My::Schema::Result::Device;
+
+use My::Schema::Candy;
+
+primary_column id => {
+   data_type => 'int',
+   is_auto_increment => 1,
+};
+
+column type_id => { data_type => 'int' };
+
+column name => {
+   data_type => 'varchar',
+   size      => 128,
+};
+
+column last_checkin => {
+   data_type   => 'datetime',
+   is_nullable => 1,
+};
+
+column is_enabled => { data_type => 'bit' };
+
+has_many computer_device_links => '::Computer_Device', 'device_id';
+belongs_to type => '::DeviceType', 'type_id';
+
+unique_constraint name_and_type => [qw(name type_id)];
+
+1;
+         </pre>
+      </div>
+   </div>
+
+   <!-- TODO: m2m? -->
+
+   <div class="slide">
+      <h2>Definition via Perl - ResultSource</h2>
+
+      <ol>
+         <li class=slide>Represents table or view</li>
+         <li class=slide>Defined entirely as a side effect of the Result Class
+         definition above</li>
+         <li class=slide>(Or the other way around)</li>
+      </ol>
+   </div>
+
+   <div class="slide">
+      <h2>Definition via Perl - ResultSet</h2>
+
+      <ol>
+         <li class="slide">Represents query</li>
       </ol>
    </div>
 
@@ -74,7 +362,7 @@
    <div class="slide">
       <h2>Extensions You'll Need</h2>
       <ol>
-         <li class="slide">Deploment</li>
+         <li class="slide">Deployment</li>
          <li class="slide">Result</li>
          <li class="slide">ResultSet</li>
       </ol>
