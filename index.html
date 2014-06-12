@@ -386,9 +386,10 @@ __PACKAGE__->load_components(
    <div class="slide">
       <h2>Definition via Perl - ResultSet</h2>
       <div class="slide"><pre>
-package My::Schema::ResultSet::Account; use 5.20.0; use warnings;
+package My::Schema::ResultSet::Device; use 5.20.0; use warnings;
 use parent 'My::Schema::ResultSet';
-sub search_by_name { $_[0]->search({ $_[0]->me . user => $_[1] }) }
+sub search_by_name { $_[0]->search({ $_[0]->me . name => $_[1] }) }
+sub enabled { $_[0]->search({ $_[0]->me . is_enabled => 1 }) }
 sub find_by_name { $_[0]->search_by_name($_[1])->single }
 1;
       </pre></div>
@@ -428,9 +429,29 @@ sub find_by_name { $_[0]->search_by_name($_[1])->single }
       <a href="https://secure.flickr.com/photos/jef_safi/2768455634">"dıaptych(lεƒt) :: mεss-up 1/1 mεss-agε" by Jef Safi, CC by-nc-nd 2.0</a>
    </div>
 
+   <div class="slide">
+      <h2>Searching 💡</h2>
+
+      <div class="slide"><pre>
+say $_->name for
+   $schema->resultset('Device')
+   ->search({ 'me.name' => 'phone' })->all </pre></div>
+
+      <div class="slide"><pre>
+say $_->name for
+   $schema->resultset('Device')
+   ->search_by_name('phone')->all </pre></div>
+   </div>
 
    <div class="slide">
       <h2>Searching 💡</h2>
+
+      <div class="slide"><pre>
+say $_->name for
+   $schema->resultset('Device')
+   ->enabled
+   ->search_by_name('phone')
+   ->all </pre></div>
    </div>
 
    <div class="slide">
