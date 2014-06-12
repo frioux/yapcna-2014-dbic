@@ -21,11 +21,20 @@
 <body class="deck-container">
 
    <div class="slide">
-      <h2>DBIx::Class 💡s</h2>
-      <p>Arthur Axel fREW Schmidt</p>
-      <p>YAPC::NA</p>
-      <p>Orlando, Florida</p>
-      <p>2014 June 24, 10:00</p>
+      <div class=l>
+         <h2>DBIx::Class 💡s</h2>
+         <p>Arthur Axel fREW Schmidt</p>
+         <p>YAPC::NA</p>
+         <p>Orlando, Florida</p>
+         <p>2014 June 24, 10:00</p>
+      </div>
+
+      <div class=r>
+         <img src="/img/bulb.jpg" />
+         <a
+            href="https://secure.flickr.com/photos/zionfiction/5995758437/in/photolist-a8PQ6t-7Hfq2m-8ucADS-asTHf-81DJrf-bvzbsP-679VRB-54zC9L-6p5bdN-M1Vc7-ed7sQ8-4MTELr-4tX7Kh-93bed-7WyVx7-cagECj-dD8cV-g28ByP-4zrmem-etFB2s-ud6zF-abJt4d-abFCbe-ndPrCA-4scTLJ-7D7nxf-7tGt4e-4VZq5E-ee1xap-5zB1gw-eZE9Af-ffmLY5-bxjE4f-axgiff-rwJN9-bVnfWP-8HAiw-bKZnce-ewsUEy-ka74vK-3iCZX-4jC9Ef-7EBFKt-99r9L7-ffmSd1-htnCee-4j3Zot-JwGj1-iPg8td-bf7JW6">"lightbulb-idea.jpg"
+            by r. nial bradshaw, CC2.0</a>
+      </div>
    </div>
 
    <div class="slide">
@@ -48,22 +57,6 @@
             be shared)</span></dd>
       </dl>
       <p class="slide">Questions?</p>
-   </div>
-
-   <div class="slide">
-      <h2>DBIC at "Compile" Time</h2>
-      <ol>
-         <li class="slide">
-            Definition Options<ul>
-               <li>Perl (vanilla DBIC)</li>
-               <li>SQL (::Schema::Loader</li>
-            </ul>
-         </li>
-         <li class="slide">Schema</li>
-         <li class="slide">Result</li>
-         <li class="slide">ResultSource</li>
-         <li class="slide">ResultSet</li>
-      </ol>
    </div>
 
    <div class="slide">
@@ -311,6 +304,21 @@ unique_constraint name_and_type => [qw(name type_id)];
    </div>
 
    <div class="slide">
+      <h2>Deobfuscating <strike>Relationships</strike> 💡</h2>
+
+      <dl>
+         <dt class="slide">many_to_many</dt>
+         <dd class="slide">not a rel, more than one layer of joins</dd>
+         <dd class="slide">only adds methods to result, very limiting</dd>
+         <dd class="slide">"Artist"."id" → "Artist_Label"."artist_id",
+            "Artist_Label"."label_id" → "Label"."id"
+            <p class="slide">artist <strong>many_to_many</strong> labels</p>
+            <p class="slide">minimal sugar</p>
+         </dd>
+      </dl>
+   </div>
+
+   <div class="slide">
       <h2>Definition via Perl - Result Class</h2>
 
       <div class="slide">
@@ -347,8 +355,6 @@ unique_constraint name_and_type => [qw(name type_id)];
          </pre>
       </div>
    </div>
-
-   <!-- TODO: m2m? -->
 
    <div class="slide">
       <h2>Definition via Perl - ResultSource</h2>
