@@ -10,22 +10,18 @@
    <link rel="stylesheet" href="deck.js/extensions/menu/deck.menu.css">
    <link rel="stylesheet" href="deck.js/extensions/navigation/deck.navigation.css">
    <link rel="stylesheet" href="deck.js/extensions/status/deck.status.css">
-   <link rel="stylesheet" href="/style.css">
 
    <!-- Theme CSS files (menu swaps these out) -->
-   <link rel="stylesheet" id="style-theme-link"
-   href="deck.js/themes/style/web-2.0.css">
+   <link rel="stylesheet" id="style-theme-link" href="deck.js/themes/style/web-2.0.css">
+
+   <link rel="stylesheet" href="/style.css">
 
    <script src="deck.js/modernizr.custom.js"></script>
 </head>
 <body class="deck-container">
 
    <div class="slide">
-      <h1>DBIx::Class Foundations</h1>
-   </div>
-
-   <div class="slide">
-      <h2>DBIx::Class Foundations</h2>
+      <h2>DBIx::Class 💡s</h2>
       <p>Arthur Axel fREW Schmidt</p>
       <p>YAPC::NA</p>
       <p>Orlando, Florida</p>
@@ -33,34 +29,29 @@
    </div>
 
    <div class="slide">
-      <h2>Who Am I?</h2>
-      <p>Arthur Axel fREW Schmidt</p>
-      <p>MTSI</p>
-      <p>Lynx</p>
+      <h2>Deobfuscating the Basics 💡</h2>
+
+      <dl>
+         <dt class="slide">Schema</dt>
+         <dd class="slide">Bunch of Tables <span class="slide">(or views, for
+            the pedants)</span></dd>
+         <dt class="slide">Result</dt>
+         <dd class="slide">Row</dd>
+         <dt class="slide">ResultSet</dt>
+         <dd class="slide">Query <span class="slide">!</span><span class="slide">!</span><span class="slide">!</span></dd>
+         <dt class="slide">ResultSource</dt>
+         <dd class="slide">Table <span class="slide">(...)</span></dd>
+         <dt class="slide">less common, but:
+            <span class="slide">Storage</span>
+         </dt>
+         <dd class="slide">Your RDBMS <span class="slide">(theoretically could
+            be shared)</span></dd>
+      </dl>
+      <p class="slide">Questions?</p>
    </div>
 
    <div class="slide">
-      <h2>Outline</h2>
-      <div class="r img">
-         <img src="/img/lines.jpg" />
-         <p><a
-            href="https://secure.flickr.com/photos/flyingturtle/837938254/in/photostream/">"yellow
-            lines" by steve loya</a></p>
-         <p><a href="https://creativecommons.org/licenses/by-nc-nd/2.0/"> Some
-            rights reserved</a></p>
-      </div>
-      <ol class=l>
-         <li class="slide">DBIx::Class?</li>
-         <li class="slide">DBIC at "Compile" Time</li>
-         <li class="slide">DBIC at "Run" Time</li>
-         <li class="slide">Extensions You'll Need</li>
-         <li class="slide">DBIC at "Compile" Time - Redux</li>
-         <li class="slide">DBIC at "Run" Time - Redux</li>
-      </ol>
-   </div>
-
-   <div class="slide">
-      <h2>DBIx::Class?</h2>
+      <h2>What even is DBIx::Class?</h2>
       <img src="/img/ubik.jpg" class=r />
       <ul class=l>
          <li class="slide">SQL Generation</li>
@@ -281,6 +272,51 @@ belongs_to type => '::DeviceType', 'type_id';
 unique_constraint name_and_type => [qw(name type_id)];
          </pre></li>
       </ol>
+   </div>
+
+   <div class="slide">
+      <h2>Deobfuscating Relationships 💡</h2>
+
+      <dl>
+         <dt class="slide">belongs_to</dt>
+         <dd class="slide"><strong>the only real thing modeled in DDL</strong></dd>
+         <dd class="slide">"Album"."artist_id" → "Artist"."id"
+            <p class="slide">album <strong>belongs to</strong> artist</p>
+            <p class="slide">non-undef accessor*</p>
+            <p class="slide">*caveat because users are liars and databases are
+            theives</p>
+         </dd>
+
+         <dt class="slide">has_many</dt>
+         <dd class="slide">other side of belongs to</dd>
+         <dd class="slide">"Artist"."id" → "Album"."artist_id"
+            <p class="slide">artist <strong>has many</strong> albums</p>
+            <p class="slide">RS accessor</p>
+         </dd>
+      </dl>
+      <p class="slide">Questions?</p>
+   </div>
+
+   <div class="slide">
+      <h2>Deobfuscating Relationships 💡</h2>
+
+      <dl>
+         <dt class="slide">might_have</dt>
+         <dd class="slide">same as has_many but zero or one (rare)</dd>
+         <dd class="slide">"Artist"."id" → "PreviousName"."artist_id"
+            <p class="slide">artist <strong>might have</strong> a previous name</p>
+            <p class="slide">Natalie Portman's Shaved Head → Brite Futures</p>
+            <p class="slide">undefable accessor</p>
+         </dd>
+
+         <dt class="slide">has_one</dt>
+         <dd class="slide">same as has_many but exactly one (more rare)</dd>
+         <dd class="slide">(first_album) "Artist"."id" → "Album"."artist_id"
+            <p class="slide">artist <strong>has one</strong> first album</p>
+            <p class="slide">non-undef accessor*</p>
+            <p class="slide">*caveat because ...</p>
+         </dd>
+      </dl>
    </div>
 
    <div class="slide">
