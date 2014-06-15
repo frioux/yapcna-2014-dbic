@@ -456,15 +456,38 @@ say $_->name for
 
    <div class="slide">
       <h2>Rel Traversal 💡</h2>
-      http://lists.scsys.co.uk/pipermail/dbix-class/2009-May/007833.html
-      notmuch show thread:0000000000000364
+      <ul>
+         <li class="slide">related_resultset (and search_related)</li>
+         <li class="slide"><a
+         href="http://lists.scsys.co.uk/pipermail/dbix-class/2009-May/007833.html">my
+         first lightbulb moment</a> (notmuch show thread:0000000000000364)</li>
+      </ul>
    </div>
 
    <div class="slide">
-      <h2>Misc. Debris</h2>
-      <ol>
-         <li class="slide">Storage</li>
-      </ol>
+      <h2>Prefetch vs Join 💡</h2>
+
+      <ul>
+         <li class="slide">join - for searching</li>
+         <li class="slide">prefetch - for searching and retreiving data</li>
+      </ul>
+   </div>
+
+   <div class="slide">
+      <h2>Columns vs Select/As</h2>
+
+      <ul>
+         <li class="slide">Not once in the 5 years I've used DBIC have I needed
+         select/as</li>
+         <li class="slide">srsly, YAGNI</li>
+         <li class="slide">these are exactly equivalent
+            <pre>select => ['foo'], as => 'bar'</pre>
+            <pre>columns => { bar => 'foo' }</pre>
+         </li>
+         <li class="slide">columns tends to be harder to get wrong</li>
+         <li class="slide">select/as is for when a single query results in many
+         columns</li>
+      </ul>
    </div>
 
    <div class="slide">
@@ -493,6 +516,14 @@ say $_->name for
          <li class="slide">Fast-Out: Subqueries</li>
          <li class="slide">Fast-Out: Correlated Subqueries</li>
       </ol>
+   </div>
+
+   <div class="slide">
+      <h2>Subqueries</h2>
+   </div>
+
+   <div class="slide">
+      <h2>Correlated Subqueries</h2>
    </div>
 
 <a href="#" class="deck-prev-link" title="Previous">&#8592;</a>
