@@ -238,56 +238,6 @@ unique_constraint name_and_type => [qw(name type_id)];
    </div>
 
    <div class="slide">
-      <h2>Definition via Perl - Result Class</h2>
-
-      <ol>
-         <li class=slide> <pre> use My::Schema::Candy; </pre></li>
-         <li class=slide><pre>
-primary_column id => {
-   data_type => 'int',
-   is_auto_increment => 1,
-};
-         </pre></li>
-      </ol>
-   </div>
-
-   <div class="slide">
-      <h2>Definition via Perl - Result Class</h2>
-
-      <pre>
-column type_id => { data_type => 'int' };
-
-column name => {
-   data_type => 'varchar',
-   size      => 128,
-};
-
-column last_checkin => {
-   data_type   => 'datetime',
-   is_nullable => 1,
-};
-
-column is_enabled => { data_type => 'bit' };
-         </pre>
-   </div>
-
-   <div class=slide>
-      <h2>Definition via Perl - Result Class</h2>
-
-      <ol>
-         <li class=slide><pre>
-has_many computer_device_links => '::Computer_Device', 'device_id';
-         </pre></li>
-         <li class=slide><pre>
-belongs_to type => '::DeviceType', 'type_id';
-         </pre></li>
-         <li class=slide><pre>
-unique_constraint name_and_type => [qw(name type_id)];
-         </pre></li>
-      </ol>
-   </div>
-
-   <div class="slide">
       <h2>Deobfuscating Relationships 💡</h2>
 
       <img src="/img/friend.jpg" />
