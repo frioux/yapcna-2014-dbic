@@ -505,30 +505,43 @@ say $_->name for
    </div>
 
    <div class="slide">
-      <h2>Extensions You'll Need</h2>
-      <ol>
-         <li class="slide">Deployment</li>
-         <li class="slide">Result</li>
-         <li class="slide">ResultSet</li>
-      </ol>
+      <h2>Deployment</h2>
+      <ul>
+         <li class="slide">DBIx::Class::DeploymentHandler</li>
+         <li class="slide">DBIx::Class::Migration</li>
+      </ul>
    </div>
 
    <div class="slide">
-      <h2>Custom Inflation</h2>
+      <h2>Row Extensions</h2>
 
-      <img src="/img/hamburgers.jpg" />
+      <li class="slide"> <a href="https://metacpan.org/pod/DBIx::Class::Helper::Row::OnColumnChange">DBIx::Class::Helper::Row::OnColumnChange</a> </li>
+      <li class="slide"> <a href="https://metacpan.org/pod/DBIx::Class::Helper::Row::ProxyResultSetMethod">DBIx::Class::Helper::Row::ProxyResultSetMethod</a>  </li>
+      <li class="slide"> <a href="https://metacpan.org/pod/DBIx::Class::Helper::Row::ProxyResultSetUpdate">DBIx::Class::Helper::Row::ProxyResultSetUpdate</a>  </li>
+      <li class="slide"> <a href="https://metacpan.org/pod/DBIx::Class::Helper::Row::RelationshipDWIM">DBIx::Class::Helper::Row::RelationshipDWIM</a>  </li>
+      <li class="slide"> <a href="https://metacpan.org/pod/DBIx::Class::Helper::Row::ToJSON">DBIx::Class::Helper::Row::ToJSON</a>  </li>
+      <li class="slide"> <a href="https://metacpan.org/pod/DBIx::Class::TimeStamp">DBIx::Class::TimeStamp</a>  </li>
+      <li class="slide"> <a href="https://metacpan.org/pod/DBIx::Class::EncodedColumn">DBIx::Class::EncodedColumn</a>  </li>
    </div>
 
    <div class="slide">
-      <h2>Augmented Inflation</h2>
+      <h2>ResultSet Extensions</h2>
 
-      <img src="/img/mnm.jpg" />
+      <ul>
+         <li class="slide"> <a href="https://metacpan.org/pod/DBIx::Class::Helper::ResultSet::IgnoreWantarray">DBIx::Class::Helper::ResultSet::IgnoreWantarray</a> </li>
+         <li class="slide"> <a href="https://metacpan.org/pod/DBIx::Class::Helper::ResultSet::Me">DBIx::Class::Helper::ResultSet::Me</a> </li>
+         <li class="slide"> <a href="https://metacpan.org/pod/DBIx::Class::Helper::ResultSet::Shortcut">DBIx::Class::Helper::ResultSet::Shortcut</a>  </li>
+         <li class="slide"> <a href="https://metacpan.org/pod/DBIx::Class::Helper::ResultSet::ResultClassDWIM">DBIx::Class::Helper::ResultSet::ResultClassDWIM</a>  </li>
+         <li class="slide"> <a href="https://metacpan.org/pod/DBIx::Class::Helper::ResultSet::SetOperations">DBIx::Class::Helper::ResultSet::SetOperations</a>  </li>
+         <li class="slide"> <a href="https://metacpan.org/pod/DBIx::Class::Helper::ResultSet::CorrelateRelationship">DBIx::Class::Helper::ResultSet::CorrelateRelationship</a>  </li>
+         <li class="slide"> <a href="https://metacpan.org/pod/DBIx::Class::Helper::ResultSet::DateMethods1">DBIx::Class::Helper::ResultSet::DateMethods1</a> </li>
+      </ul>
    </div>
 
    <div class="slide">
-      <h2>Populate</h2>
+      <h2>Schema Extension<strike>s</strike></h2>
 
-      <img src="/img/win.jpg" />
+      <a href="https://metacpan.org/pod/DBIx::Class::Helper::Schema::QuoteNames">DBIx::Class::Helper::Schema::QuoteNames</a> 
    </div>
 
    <div class="slide">
@@ -538,13 +551,105 @@ say $_->name for
    </div>
 
    <div class="slide">
-      <h2>Correlated Subqueries</h2>
+      <h2>Subqueries</h2>
 
-      <img src="/img/dreams.jpg" />
+      <ul>
+         <li class="slide">Mostly just ->as_query</li>
+         <li class="slide">But you probably also need ->get_column('id')</li>
+      </ul>
+      <div class="slide"><pre>
+$schema->resultset('Computer')->search({
+   'me.id' => { -in => $location_rs->get_column('id')->as_query },
+})
+      </pre></div>
    </div>
 
    <div class="slide">
       <img src="/img/end-of-tape.gif" />
+
+      Links: <ul>
+         <li> Slides: http://frioux.github.io/yapcna-2014-dbic</li>
+         <li><a href="https://www.youtube.com/watch?v=Vm_NlfHNVvg">DBIC: A Whirlwind Overview </a></li>
+         <li><a href="http://www.presentingperl.org/yn2010/deployment-handler/">Deployment Handler</a></li>
+         <li><a href="http://www.perladvent.org/2012/2012-12-21.html">Set Based DBIC</a></li>
+      </ul>
+   </div>
+
+   <div class="slide">
+      <h2>Correlated Subqueries</h2>
+
+      <img src="/img/dreams.jpg" />
+      (see Set Based DBIC)
+   </div>
+
+   <div class="slide">
+      <h2>Augmented Inflation</h2>
+
+      <img src="/img/mnm.jpg" />
+   </div>
+
+   <div class="slide">
+      <h2>Augmented Inflation</h2>
+
+      <pre>
+package My::Schema::ResultClass::ComputerWithMacros;
+
+use Moo;
+use warnings NONFATAL => 'all';
+
+use Lynx::Macro;
+use My::Schema::Result::Computer;
+
+has schema => (
+   is => 'ro',
+   required => 1,
+);
+
+has wmp => (
+   is => 'ro',
+   lazy => 1,
+   init_arg => undef,
+   builder => '_build_wmp',
+);
+
+sub _build_wmp { Lynx::Macro->new(schema => $_[0]->schema) }
+
+has _macros => (
+   is => 'ro',
+   lazy => 1,
+   init_arg => undef,
+   builder => '_build_macros',
+);
+
+sub _build_macros {
+   return +{
+      map { lc $_->{from} => $_ }
+      $_[0]->schema->resultset('Macro')->search({
+         'me.from' => { -not_like => "%[%]%" },
+      }, {
+         result_class => '::HRI',
+      })->all
+   }
+}
+
+sub inflate_result {
+   my ($self, $src, $data, $prefetch) = @_;
+
+   unless (defined $prefetch->{_macro}[0]{to}) {
+      if (my $macro = $self->_macros->{lc $data->{name}}) {
+         $prefetch->{_macro} = [$macro]
+      } elsif (my $wc_macro = $self->wmp->choose_macro($data->{name})) {
+         $prefetch->{_macro} = [$wc_macro]
+      }
+   }
+
+   My::Schema::Result::Computer->inflate_result($src, $data, $prefetch)
+};
+
+
+1;
+
+      </pre>
    </div>
 
 <a href="#" class="deck-prev-link" title="Previous">&#8592;</a>
