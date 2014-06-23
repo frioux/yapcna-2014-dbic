@@ -38,6 +38,13 @@
    </div>
 
    <div class="slide">
+      <h2>(blah blah hiring blah)</h2>
+
+      <img src="/img/sadpizza.jpg" />
+   </div>
+
+
+   <div class="slide">
       <h2>Me</h2>
       <img src="/img/neverending.gif" />
    </div>
@@ -310,44 +317,6 @@ unique_constraint name_and_type => [qw(name type_id)];
    </div>
 
    <div class="slide">
-      <h2>Definition via Perl - Result Class</h2>
-
-      <div class="slide">
-         <pre>
-package My::Schema::Result::Device;
-
-use My::Schema::Candy;
-
-primary_column id => {
-   data_type => 'int',
-   is_auto_increment => 1,
-};
-
-column type_id => { data_type => 'int' };
-
-column name => {
-   data_type => 'varchar',
-   size      => 128,
-};
-
-column last_checkin => {
-   data_type   => 'datetime',
-   is_nullable => 1,
-};
-
-column is_enabled => { data_type => 'bit' };
-
-has_many computer_device_links => '::Computer_Device', 'device_id';
-belongs_to type => '::DeviceType', 'type_id';
-
-unique_constraint name_and_type => [qw(name type_id)];
-
-1;
-         </pre>
-      </div>
-   </div>
-
-   <div class="slide">
       <h2>Definition via Perl - ResultSource</h2>
 
       <ol>
@@ -453,10 +422,31 @@ say $_->name for
       <h2>Rel Traversal 💡</h2>
       <ul>
          <li class="slide">related_resultset (and search_related)</li>
+         <li class="slide">(and join)</li>
          <li class="slide"><a
          href="http://lists.scsys.co.uk/pipermail/dbix-class/2009-May/007833.html">my
          first lightbulb moment</a> (notmuch show thread:0000000000000364)</li>
       </ul>
+   </div>
+
+   <div class="slide">
+      <h2>Subqueries</h2>
+
+      <img src="/img/sercret-pizza.jpg" />
+   </div>
+
+   <div class="slide">
+      <h2>Subqueries</h2>
+
+      <ul>
+         <li class="slide">Mostly just ->as_query</li>
+         <li class="slide">But you probably also need ->get_column('id')</li>
+      </ul>
+      <div class="slide"><pre>
+$schema->resultset('Computer')->search({
+   'me.id' => { -in => $location_rs->get_column('id')->as_query },
+})
+      </pre></div>
    </div>
 
    <div class="slide">
@@ -495,6 +485,32 @@ say $_->name for
          <li class="slide">columns tends to be harder to get wrong</li>
          <li class="slide">select/as is for when a single query results in many
          columns</li>
+      </ul>
+   </div>
+
+   <div class="slide">
+      <h2>Populate</h2>
+
+      Allows super fast bulk insertion into the database; we've even found it
+      can usually outperform naïve DBI based insertion
+   </div>
+
+   <div class="slide">
+      <h2>What really hits the DB 💡</h2>
+
+      <ul>
+         <li class="slide"> $rs->all</li>
+         <li class="slide"> $rs->first</li>
+         <li class="slide"> $rs->single</li>
+         <li class="slide"> $rs->next</li>
+         <li class="slide"> $rs->find</li>
+         <li class="slide"> $rs->update</li>
+         <li class="slide"> $rs->delete</li>
+         <li class="slide"> $rs->populate</li>
+         <li class="slide"> $row->update</li>
+         <li class="slide"> $row->delete</li>
+         <li class="slide"> $row->$row_accessor (non-has_many)</li>
+         <li class="slide"> $row->discard_changes</li>
       </ul>
    </div>
 
@@ -542,26 +558,6 @@ say $_->name for
       <h2>Schema Extension<strike>s</strike></h2>
 
       <a href="https://metacpan.org/pod/DBIx::Class::Helper::Schema::QuoteNames">DBIx::Class::Helper::Schema::QuoteNames</a> 
-   </div>
-
-   <div class="slide">
-      <h2>Subqueries</h2>
-
-      <img src="/img/sercret-pizza.jpg" />
-   </div>
-
-   <div class="slide">
-      <h2>Subqueries</h2>
-
-      <ul>
-         <li class="slide">Mostly just ->as_query</li>
-         <li class="slide">But you probably also need ->get_column('id')</li>
-      </ul>
-      <div class="slide"><pre>
-$schema->resultset('Computer')->search({
-   'me.id' => { -in => $location_rs->get_column('id')->as_query },
-})
-      </pre></div>
    </div>
 
    <div class="slide">
